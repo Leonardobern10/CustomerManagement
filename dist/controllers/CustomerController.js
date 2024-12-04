@@ -38,11 +38,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CustomerController = void 0;
 var CustomerService_1 = require("../services/CustomerService");
+var BadRequestException_1 = require("../exceptions/BadRequestException");
+var NotFoundException_1 = require("../exceptions/NotFoundException");
 var service = new CustomerService_1.CustomerService();
 var CustomerController = /** @class */ (function () {
     function CustomerController() {
     }
-    CustomerController.prototype.insert = function (req, res) {
+    CustomerController.prototype.insert = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var _a, name_1, email, newCustomer, error_1;
             return __generator(this, function (_b) {
@@ -50,6 +52,9 @@ var CustomerController = /** @class */ (function () {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
                         _a = req.body, name_1 = _a.name, email = _a.email;
+                        if (!name_1 || !email) {
+                            throw new BadRequestException_1.BadRequestException('Both name and email are required.');
+                        }
                         return [4 /*yield*/, service.create(name_1, email)];
                     case 1:
                         newCustomer = _b.sent();
@@ -57,14 +62,14 @@ var CustomerController = /** @class */ (function () {
                         return [3 /*break*/, 3];
                     case 2:
                         error_1 = _b.sent();
-                        res.status(500).json(error_1);
+                        next(error_1);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    CustomerController.prototype.getAll = function (req, res) {
+    CustomerController.prototype.getAll = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var allCustomers, error_2;
             return __generator(this, function (_a) {
@@ -78,14 +83,14 @@ var CustomerController = /** @class */ (function () {
                         return [3 /*break*/, 3];
                     case 2:
                         error_2 = _a.sent();
-                        res.status(500).json({ message: error_2 });
+                        next(error_2);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    CustomerController.prototype.getId = function (req, res) {
+    CustomerController.prototype.getId = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var id, customer, error_3;
             return __generator(this, function (_a) {
@@ -96,23 +101,21 @@ var CustomerController = /** @class */ (function () {
                         return [4 /*yield*/, service.listById(id)];
                     case 1:
                         customer = _a.sent();
-                        if (customer) {
-                            res.status(200).json(customer);
+                        if (!customer) {
+                            throw new NotFoundException_1.NotFoundException('Customer not found.');
                         }
-                        else {
-                            res.status(404).json({ error: 'User not found' });
-                        }
+                        res.status(200).json(customer);
                         return [3 /*break*/, 3];
                     case 2:
                         error_3 = _a.sent();
-                        res.status(500).json({ error: error_3 });
+                        next(error_3);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    CustomerController.prototype.updateCustomer = function (req, res) {
+    CustomerController.prototype.updateCustomer = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             var id, _a, name_2, email, customer, error_4;
             return __generator(this, function (_b) {
@@ -121,46 +124,50 @@ var CustomerController = /** @class */ (function () {
                         _b.trys.push([0, 2, , 3]);
                         id = req.params.id;
                         _a = req.body, name_2 = _a.name, email = _a.email;
+                        if (!name_2 || !email) {
+                            throw new BadRequestException_1.BadRequestException('Both name and email are required for update.');
+                        }
                         return [4 /*yield*/, service.update(id, name_2, email)];
                     case 1:
                         customer = _b.sent();
-                        if (customer) {
-                            res.status(200).json({ message: 'Customer updated!' });
+                        if (!customer) {
+                            throw new NotFoundException_1.NotFoundException('Customer not found.');
                         }
-                        else {
-                            res.status(404).json({ message: 'Customer not found' });
-                        }
+                        res.status(200).json({ message: 'Customer updated!' });
                         return [3 /*break*/, 3];
                     case 2:
                         error_4 = _b.sent();
-                        res.status(500).json({ message: 'Error to uptade customer' });
+                        next(error_4);
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    CustomerController.prototype.deleteCustomer = function (req, res) {
+    CustomerController.prototype.deleteCustomer = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, error_5;
+            var id, customer, error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _a.trys.push([0, 3, , 4]);
                         id = req.params.id;
-                        return [4 /*yield*/, service.detele(id)];
+                        return [4 /*yield*/, service.listById(id)];
                     case 1:
+                        customer = _a.sent();
+                        if (!customer) {
+                            throw new NotFoundException_1.NotFoundException('Customer not found.');
+                        }
+                        return [4 /*yield*/, service.detele(id)];
+                    case 2:
                         _a.sent();
                         res.status(200).json({ message: 'Customer deleted!' });
-                        return [3 /*break*/, 3];
-                    case 2:
+                        return [3 /*break*/, 4];
+                    case 3:
                         error_5 = _a.sent();
-                        res.status(500).json({
-                            message: 'Error on delete customer',
-                            error: error_5,
-                        });
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
+                        next(error_5);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
             });
         });

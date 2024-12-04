@@ -4,11 +4,11 @@
     "main": "app.ts",
     "scripts": {
         "test": "jest",
-        "start": "node dist/app.js",
-        "dev": "ts-node --respawn src/app.ts",
+        "start": "node --env-file=.env dist/app.js",
+        "dev": "ts-node --respawn --env-file=.env src/app.ts",
         "build": "tsc",
         "prepare": "npm run build",
-        "start:prod": "npm run build && node dist/app.js"
+        "start:prod": "npm run build && node --env-file=.env dist/app.js"
     },
     "keywords": [],
     "author": "",

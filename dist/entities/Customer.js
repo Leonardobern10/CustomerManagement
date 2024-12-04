@@ -11,6 +11,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Customer = void 0;
 var typeorm_1 = require("typeorm");
+/**
+ * Entidade que representa um cliente no banco de dados.
+ * Contém os campos `id` (chave primária), `name` e `email`.
+ */
 var Customer = /** @class */ (function () {
     function Customer() {
     }

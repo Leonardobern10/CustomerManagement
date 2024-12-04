@@ -39,71 +39,155 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CustomerService = void 0;
 var database_1 = require("../config/database");
 var Customer_1 = require("../entities/Customer");
+var CustomerNotFoundException_1 = require("../exceptions/CustomerNotFoundException");
+var DatabaseExceptions_1 = require("../exceptions/DatabaseExceptions");
+/**
+ * Serviço responsável por gerenciar as operações relacionadas aos clientes.
+ * Inclui métodos para criar, listar, buscar por ID, atualizar e excluir clientes.
+ */
 var CustomerService = /** @class */ (function () {
     function CustomerService() {
         this.repository = database_1.AppDataSource.getRepository(Customer_1.Customer);
     }
+    /**
+     * Cria um novo cliente no banco de dados.
+     * @param name Nome do cliente.
+     * @param email Email do cliente.
+     * @returns O cliente recém-criado.
+     * @throws DatabaseException Em caso de falha ao salvar no banco.
+     */
     CustomerService.prototype.create = function (name, email) {
         return __awaiter(this, void 0, void 0, function () {
-            var newCustomer;
+            var newCustomer, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _a.trys.push([0, 2, , 3]);
                         newCustomer = new Customer_1.Customer();
                         newCustomer.name = name;
                         newCustomer.email = email;
                         return [4 /*yield*/, this.repository.save(newCustomer)];
                     case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        error_1 = _a.sent();
+                        throw new DatabaseExceptions_1.DatabaseException('Failed to create a new customer.');
+                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
+    /**
+     * Lista todos os clientes cadastrados no banco de dados.
+     * @returns Uma lista de clientes.
+     * @throws DatabaseException Em caso de falha na operação do banco.
+     */
     CustomerService.prototype.listAll = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.find()];
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.repository.find()];
                     case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        error_2 = _a.sent();
+                        throw new DatabaseExceptions_1.DatabaseException('Failed to fetch customer list.');
+                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
+    /**
+     * Busca um cliente no banco de dados pelo ID.
+     * @param id ID do cliente.
+     * @returns O cliente encontrado.
+     * @throws CustomerNotFoundException Se o cliente não existir.
+     * @throws DatabaseException Em caso de falha no banco.
+     */
     CustomerService.prototype.listById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
+            var customer, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.findOneBy({ id: id })];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.repository.findOneBy({ id: id })];
+                    case 1:
+                        customer = _a.sent();
+                        if (!customer) {
+                            throw new CustomerNotFoundException_1.CustomerNotFoundException("Customer with ID ".concat(id, " not found."));
+                        }
+                        return [2 /*return*/, customer];
+                    case 2:
+                        error_3 = _a.sent();
+                        if (error_3 instanceof CustomerNotFoundException_1.CustomerNotFoundException) {
+                            throw error_3;
+                        }
+                        throw new DatabaseExceptions_1.DatabaseException('Failed to fetch customer by ID.');
+                    case 3: return [2 /*return*/];
                 }
             });
         });
     };
+    /**
+     * Atualiza os dados de um cliente existente.
+     * @param id ID do cliente.
+     * @param name Novo nome do cliente.
+     * @param email Novo email do cliente.
+     * @returns O cliente atualizado.
+     * @throws CustomerNotFoundException Se o cliente não existir.
+     * @throws DatabaseException Em caso de falha na atualização.
+     */
     CustomerService.prototype.update = function (id, name, email) {
         return __awaiter(this, void 0, void 0, function () {
-            var customer;
+            var customer, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.listById(id)];
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this.listById(id)];
                     case 1:
                         customer = _a.sent();
-                        if (!customer) return [3 /*break*/, 3];
                         customer.name = name;
                         customer.email = email;
                         return [4 /*yield*/, this.repository.save(customer)];
                     case 2: return [2 /*return*/, _a.sent()];
-                    case 3: return [2 /*return*/, null];
+                    case 3:
+                        error_4 = _a.sent();
+                        if (error_4 instanceof CustomerNotFoundException_1.CustomerNotFoundException) {
+                            throw error_4;
+                        }
+                        throw new DatabaseExceptions_1.DatabaseException('Failed to update customer.');
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
+    /**
+     * Remove um cliente do banco de dados pelo ID.
+     * @param id ID do cliente.
+     * @throws CustomerNotFoundException Se o cliente não existir.
+     * @throws DatabaseException Em caso de falha na exclusão.
+     */
     CustomerService.prototype.detele = function (id) {
         return __awaiter(this, void 0, void 0, function () {
+            var error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.repository.delete(id)];
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.repository.delete(id)];
                     case 1:
                         _a.sent();
-                        return [2 /*return*/];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_5 = _a.sent();
+                        if (error_5 instanceof CustomerNotFoundException_1.CustomerNotFoundException) {
+                            throw error_5;
+                        }
+                        throw new DatabaseExceptions_1.DatabaseException('Failed to delete customer.');
+                    case 3: return [2 /*return*/];
                 }
             });
         });
