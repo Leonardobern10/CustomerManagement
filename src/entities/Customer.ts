@@ -1,5 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
+/**
+ * Entidade que representa um cliente no banco de dados.
+ * Contém os campos `id` (chave primária), `name` e `email`.
+ */
 @Entity()
 export class Customer {
     @PrimaryGeneratedColumn()

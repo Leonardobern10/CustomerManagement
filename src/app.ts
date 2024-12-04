@@ -7,8 +7,16 @@ const port = 3000;
 const App = express();
 App.use(express.json());
 
+/**
+ * Configuração das rotas da API.
+ * Todas as rotas estão prefixadas com `/api`.
+ */
 App.use('/api', router);
 
+/**
+ * Inicializa a conexão com o banco de dados e inicia o servidor.
+ * Em caso de erro, exibe uma mensagem de erro no console.
+ */
 AppDataSource.initialize()
     .then(() => {
         console.log('Banco de dados conectado!');

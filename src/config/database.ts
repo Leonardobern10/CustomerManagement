@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import { Customer } from '../entities/Customer';
 
+// Configurações do banco de dados
 export const AppDataSource = new DataSource({
     type: 'mysql',
     host: 'localhost',
