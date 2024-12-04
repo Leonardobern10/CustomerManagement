@@ -9,10 +9,17 @@
         "outDir": "./dist",
         "baseUrl": "./src",
         "paths": {
-            "*": ["node_modules/*"]
+            "*": ["node_modules/*"],
+            "@controllers/*": ["controllers/*"],
+            "@entities/*": ["entities/*"],
+            "@services/*": ["services/*"],
+            "@exceptions/*": ["exceptions/*"],
+            "@config/*": ["config/*"]
         },
+        "moduleResolution": "node", // Resolve módulos como o Node.js,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true
     },
-    "include": ["src/**/*"]
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "dist"] // Exclui pastas desnecessárias
 }

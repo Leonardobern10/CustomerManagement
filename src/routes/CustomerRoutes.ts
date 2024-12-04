@@ -1,3 +1,4 @@
+import { errorHandler } from '../handler/erroHandler';
 import { CustomerController } from '../controllers/CustomerController';
 import { Router } from 'express';
 
