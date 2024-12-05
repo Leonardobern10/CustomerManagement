@@ -2,6 +2,9 @@ import { AppDataSource } from '../config/database';
 import { Customer } from '../entities/Customer';
 import { CustomerNotFoundException } from '../exceptions/CustomerNotFoundException';
 import { DatabaseException } from '../exceptions/DatabaseExceptions';
+import { ParamsRequiredAreNull } from '../validations/ParamsRequiredAreNull';
+import { CustomerExists } from '../validations/CustomerExists';
+import { ParamsIsNullException } from '../exceptions/ParamsIsNullException';
 
 /**
  * Serviço responsável por gerenciar as operações relacionadas aos clientes.
@@ -22,10 +25,16 @@ export class CustomerService {
             const newCustomer = new Customer();
             newCustomer.name = name;
             newCustomer.email = email;
+            (await newCustomer.listProps()).forEach((element) => {
+                ParamsRequiredAreNull.validate(element);
+            });
 
             return await this.repository.save(newCustomer);
-        } catch (error) {
-            throw new DatabaseException('Failed to create a new customer.');
+        } catch (error: any) {
+            if (error instanceof ParamsIsNullException) {
+                throw new ParamsIsNullException();
+            }
+            throw new DatabaseException(error);
         }
     }
 
@@ -37,8 +46,8 @@ export class CustomerService {
     async listAll(): Promise<Customer[]> {
         try {
             return await this.repository.find();
-        } catch (error) {
-            throw new DatabaseException('Failed to fetch customer list.');
+        } catch (error: any) {
+            throw new DatabaseException(error);
         }
     }
 
@@ -51,15 +60,15 @@ export class CustomerService {
      */
     async listById(id: string): Promise<Customer> {
         try {
+            ParamsRequiredAreNull.validate(id);
             const customer = await this.repository.findOneBy({ id });
-            if (!customer) {
-                throw new CustomerNotFoundException(
-                    `Customer with ID ${id} not found.`
-                );
-            }
-            return customer;
-        } catch (error) {
+            CustomerExists.validate(customer);
+            return customer!;
+        } catch (error: any) {
             if (error instanceof CustomerNotFoundException) {
+                throw error;
+            }
+            if (error instanceof ParamsIsNullException) {
                 throw error;
             }
             throw new DatabaseException('Failed to fetch customer by ID.');
@@ -75,14 +84,23 @@ export class CustomerService {
      * @throws CustomerNotFoundException Se o cliente não existir.
      * @throws DatabaseException Em caso de falha na atualização.
      */
-    async update(id: string, name: string, email: string): Promise<Customer> {
+    async update(
+        id: string,
+        name: string,
+        email: string
+    ): Promise<Customer | null> {
         try {
+            ParamsRequiredAreNull.validate(id);
             const customer = await this.listById(id);
-            customer.name = name;
-            customer.email = email;
-            return await this.repository.save(customer);
-        } catch (error) {
+            CustomerExists.validate(customer);
+            customer!.name = name;
+            customer!.email = email;
+            return await this.repository.save(customer!);
+        } catch (error: any) {
             if (error instanceof CustomerNotFoundException) {
+                throw error;
+            }
+            if (error instanceof ParamsIsNullException) {
                 throw error;
             }
             throw new DatabaseException('Failed to update customer.');
@@ -97,8 +115,9 @@ export class CustomerService {
      */
     async detele(id: string): Promise<void> {
         try {
+            ParamsRequiredAreNull.validate(id);
             await this.repository.delete(id);
-        } catch (error) {
+        } catch (error: any) {
             if (error instanceof CustomerNotFoundException) {
                 throw error;
             }

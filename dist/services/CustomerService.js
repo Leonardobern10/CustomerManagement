@@ -41,6 +41,9 @@ var database_1 = require("../config/database");
 var Customer_1 = require("../entities/Customer");
 var CustomerNotFoundException_1 = require("../exceptions/CustomerNotFoundException");
 var DatabaseExceptions_1 = require("../exceptions/DatabaseExceptions");
+var ParamsRequiredAreNull_1 = require("../validations/ParamsRequiredAreNull");
+var CustomerExists_1 = require("../validations/CustomerExists");
+var ParamsIsNullException_1 = require("../exceptions/ParamsIsNullException");
 /**
  * Serviço responsável por gerenciar as operações relacionadas aos clientes.
  * Inclui métodos para criar, listar, buscar por ID, atualizar e excluir clientes.
@@ -62,16 +65,24 @@ var CustomerService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        _a.trys.push([0, 3, , 4]);
                         newCustomer = new Customer_1.Customer();
                         newCustomer.name = name;
                         newCustomer.email = email;
+                        return [4 /*yield*/, newCustomer.listProps()];
+                    case 1:
+                        (_a.sent()).forEach(function (element) {
+                            ParamsRequiredAreNull_1.ParamsRequiredAreNull.validate(element);
+                        });
                         return [4 /*yield*/, this.repository.save(newCustomer)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                    case 2:
+                    case 2: return [2 /*return*/, _a.sent()];
+                    case 3:
                         error_1 = _a.sent();
-                        throw new DatabaseExceptions_1.DatabaseException('Failed to create a new customer.');
-                    case 3: return [2 /*return*/];
+                        if (error_1 instanceof ParamsIsNullException_1.ParamsIsNullException) {
+                            throw new ParamsIsNullException_1.ParamsIsNullException();
+                        }
+                        throw new DatabaseExceptions_1.DatabaseException(error_1);
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -92,7 +103,7 @@ var CustomerService = /** @class */ (function () {
                     case 1: return [2 /*return*/, _a.sent()];
                     case 2:
                         error_2 = _a.sent();
-                        throw new DatabaseExceptions_1.DatabaseException('Failed to fetch customer list.');
+                        throw new DatabaseExceptions_1.DatabaseException(error_2);
                     case 3: return [2 /*return*/];
                 }
             });
@@ -112,16 +123,18 @@ var CustomerService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        ParamsRequiredAreNull_1.ParamsRequiredAreNull.validate(id);
                         return [4 /*yield*/, this.repository.findOneBy({ id: id })];
                     case 1:
                         customer = _a.sent();
-                        if (!customer) {
-                            throw new CustomerNotFoundException_1.CustomerNotFoundException("Customer with ID ".concat(id, " not found."));
-                        }
+                        CustomerExists_1.CustomerExists.validate(customer);
                         return [2 /*return*/, customer];
                     case 2:
                         error_3 = _a.sent();
                         if (error_3 instanceof CustomerNotFoundException_1.CustomerNotFoundException) {
+                            throw error_3;
+                        }
+                        if (error_3 instanceof ParamsIsNullException_1.ParamsIsNullException) {
                             throw error_3;
                         }
                         throw new DatabaseExceptions_1.DatabaseException('Failed to fetch customer by ID.');
@@ -146,9 +159,11 @@ var CustomerService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
+                        ParamsRequiredAreNull_1.ParamsRequiredAreNull.validate(id);
                         return [4 /*yield*/, this.listById(id)];
                     case 1:
                         customer = _a.sent();
+                        CustomerExists_1.CustomerExists.validate(customer);
                         customer.name = name;
                         customer.email = email;
                         return [4 /*yield*/, this.repository.save(customer)];
@@ -156,6 +171,9 @@ var CustomerService = /** @class */ (function () {
                     case 3:
                         error_4 = _a.sent();
                         if (error_4 instanceof CustomerNotFoundException_1.CustomerNotFoundException) {
+                            throw error_4;
+                        }
+                        if (error_4 instanceof ParamsIsNullException_1.ParamsIsNullException) {
                             throw error_4;
                         }
                         throw new DatabaseExceptions_1.DatabaseException('Failed to update customer.');
@@ -177,6 +195,7 @@ var CustomerService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
+                        ParamsRequiredAreNull_1.ParamsRequiredAreNull.validate(id);
                         return [4 /*yield*/, this.repository.delete(id)];
                     case 1:
                         _a.sent();

@@ -14,4 +14,8 @@ export class Customer {
 
     @Column({ type: 'varchar', length: 90 })
     email!: string;
+
+    public listProps = async (): Promise<string[]> => {
+        return [this.name, this.email];
+    };
 }

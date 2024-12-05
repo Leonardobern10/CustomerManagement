@@ -38,8 +38,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CustomerController = void 0;
 var CustomerService_1 = require("../services/CustomerService");
-var BadRequestException_1 = require("../exceptions/BadRequestException");
-var NotFoundException_1 = require("../exceptions/NotFoundException");
 var service = new CustomerService_1.CustomerService();
 var CustomerController = /** @class */ (function () {
     function CustomerController() {
@@ -52,9 +50,6 @@ var CustomerController = /** @class */ (function () {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
                         _a = req.body, name_1 = _a.name, email = _a.email;
-                        if (!name_1 || !email) {
-                            throw new BadRequestException_1.BadRequestException('Both name and email are required.');
-                        }
                         return [4 /*yield*/, service.create(name_1, email)];
                     case 1:
                         newCustomer = _b.sent();
@@ -101,9 +96,6 @@ var CustomerController = /** @class */ (function () {
                         return [4 /*yield*/, service.listById(id)];
                     case 1:
                         customer = _a.sent();
-                        if (!customer) {
-                            throw new NotFoundException_1.NotFoundException('Customer not found.');
-                        }
                         res.status(200).json(customer);
                         return [3 /*break*/, 3];
                     case 2:
@@ -124,16 +116,10 @@ var CustomerController = /** @class */ (function () {
                         _b.trys.push([0, 2, , 3]);
                         id = req.params.id;
                         _a = req.body, name_2 = _a.name, email = _a.email;
-                        if (!name_2 || !email) {
-                            throw new BadRequestException_1.BadRequestException('Both name and email are required for update.');
-                        }
                         return [4 /*yield*/, service.update(id, name_2, email)];
                     case 1:
                         customer = _b.sent();
-                        if (!customer) {
-                            throw new NotFoundException_1.NotFoundException('Customer not found.');
-                        }
-                        res.status(200).json({ message: 'Customer updated!' });
+                        res.status(200).json({ message: customer });
                         return [3 /*break*/, 3];
                     case 2:
                         error_4 = _b.sent();
@@ -155,9 +141,6 @@ var CustomerController = /** @class */ (function () {
                         return [4 /*yield*/, service.listById(id)];
                     case 1:
                         customer = _a.sent();
-                        if (!customer) {
-                            throw new NotFoundException_1.NotFoundException('Customer not found.');
-                        }
                         return [4 /*yield*/, service.detele(id)];
                     case 2:
                         _a.sent();

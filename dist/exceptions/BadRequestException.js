@@ -20,7 +20,6 @@ var BaseExceptions_1 = require("./BaseExceptions");
 var BadRequestException = /** @class */ (function (_super) {
     __extends(BadRequestException, _super);
     function BadRequestException(message) {
-        if (message === void 0) { message = 'Bad Request'; }
         return _super.call(this, message, 400) || this;
     }
     return BadRequestException;

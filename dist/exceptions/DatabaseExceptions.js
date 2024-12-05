@@ -16,14 +16,15 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DatabaseException = void 0;
+var BaseExceptions_1 = require("./BaseExceptions");
 var DatabaseException = /** @class */ (function (_super) {
     __extends(DatabaseException, _super);
     function DatabaseException(message) {
         if (message === void 0) { message = 'Database operation failed'; }
-        var _this = _super.call(this, message) || this;
+        var _this = _super.call(this, message, 500) || this;
         _this.name = 'DatabaseException';
         return _this;
     }
     return DatabaseException;
-}(Error));
+}(BaseExceptions_1.BaseException));
 exports.DatabaseException = DatabaseException;

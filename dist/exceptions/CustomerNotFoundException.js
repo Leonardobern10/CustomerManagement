@@ -19,7 +19,7 @@ exports.CustomerNotFoundException = void 0;
 var CustomerNotFoundException = /** @class */ (function (_super) {
     __extends(CustomerNotFoundException, _super);
     function CustomerNotFoundException(message) {
-        if (message === void 0) { message = 'Customer not found'; }
+        if (message === void 0) { message = 'Customer not found on database'; }
         var _this = _super.call(this, message) || this;
         _this.name = 'CustomerNotFoundException';
         return _this;

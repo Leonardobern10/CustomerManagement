@@ -16,14 +16,15 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ParamsIsNullException = void 0;
+var BaseExceptions_1 = require("./BaseExceptions");
 var ParamsIsNullException = /** @class */ (function (_super) {
     __extends(ParamsIsNullException, _super);
-    function ParamsIsNullException(error) {
-        if (error === void 0) { error = 'Param(s) has value null'; }
-        var _this = _super.call(this, error) || this;
+    function ParamsIsNullException(message) {
+        if (message === void 0) { message = 'Param(s) has value null'; }
+        var _this = _super.call(this, message, 400) || this;
         _this.name = 'ParamsIsNullException';
         return _this;
     }
     return ParamsIsNullException;
-}(Error));
+}(BaseExceptions_1.BaseException));
 exports.ParamsIsNullException = ParamsIsNullException;
